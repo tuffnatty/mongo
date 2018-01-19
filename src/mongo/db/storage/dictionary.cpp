@@ -75,7 +75,7 @@ namespace mongo {
             }
         }
 
-        MONGO_EXPORT_SERVER_PARAMETER(defaultCompression, std::string, "zlib");
+        MONGO_EXPORT_SERVER_PARAMETER(defaultCompression, std::string, "zstd");
         MONGO_EXPORT_SERVER_PARAMETER(defaultPageSize, BytesQuantity<int>, StringData("4MB"));
         MONGO_EXPORT_SERVER_PARAMETER(defaultReadPageSize, BytesQuantity<int>, StringData("64KB"));
         MONGO_EXPORT_SERVER_PARAMETER(defaultFanout, int, 16);
@@ -238,6 +238,10 @@ namespace mongo {
 
         static string compressionMethodToString(TOKU_COMPRESSION_METHOD c) {
             switch (c) {
+                case TOKU_SNAPPY_METHOD:
+                    return "snappy";
+                case TOKU_ZSTD_METHOD:
+                    return "zstd";
                 case TOKU_SMALL_COMPRESSION_METHOD:
                 case TOKU_LZMA_METHOD:
                     return "lzma";
@@ -290,6 +294,10 @@ namespace mongo {
                         compression = TOKU_QUICKLZ_METHOD;
                     } else if (str == "zlib") {
                         compression = TOKU_ZLIB_WITHOUT_CHECKSUM_METHOD;
+                    } else if (str == "snappy") {
+                        compression = TOKU_SNAPPY_METHOD;
+                    } else if (str == "zstd") {
+                        compression = TOKU_ZSTD_METHOD;
                     } else if (str == "none") {
                         compression = TOKU_NO_COMPRESSION;
                     } else {
