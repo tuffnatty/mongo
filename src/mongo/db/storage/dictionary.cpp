@@ -288,7 +288,7 @@ namespace mongo {
                     setMap[fn] = boost::make_shared<DBParameterSetterImpl<uint32_t> >(
                         _db, fn, pageSize, _db->get_pagesize, _db->change_pagesize);
                 } else if (fn == "compression") {
-                    TOKU_COMPRESSION_METHOD compression = TOKU_ZLIB_WITHOUT_CHECKSUM_METHOD;
+                    TOKU_COMPRESSION_METHOD compression = TOKU_ZSTD_METHOD;
                     const string str = e.String();
                     if (str == "lzma") {
                         compression = TOKU_LZMA_METHOD;
