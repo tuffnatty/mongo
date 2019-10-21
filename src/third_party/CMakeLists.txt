@@ -58,8 +58,8 @@ set(LIBTOKUDB tokufractaltree CACHE STRING "TokuKV fractal tree library name")
 add_subdirectory(ft-index)
 
 install(
-  FILES ft-index/README-TOKUDB
-  RENAME README-TOKUKV
+  FILES ft-index/README.md
+  RENAME README-PERCONAFT
   DESTINATION .
   COMPONENT tokumx_misc
   )

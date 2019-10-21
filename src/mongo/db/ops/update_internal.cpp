@@ -1046,7 +1046,7 @@ namespace mongo {
                     continue;
                 }
 
-                _hasDynamicArray = _hasDynamicArray || strstr( fieldName , ".$" ) > 0;
+                _hasDynamicArray = _hasDynamicArray || strstr( fieldName , ".$" ) != 0;
 
                 Mod m;
                 m.init( op , f );

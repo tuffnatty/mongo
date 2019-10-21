@@ -21,6 +21,10 @@
 #include <boost/smart_ptr/scoped_array.hpp>
 #include <cstdio>
 #include <dlfcn.h>
+#ifdef __FreeBSD__
+#define Dl_info_t Dl_info
+#endif
+
 #include <string>
 #include <ucontext.h>
 #include <vector>
@@ -95,6 +99,7 @@ namespace {
     typedef int (*WalkcontextCallbackFunc)(uintptr_t address, int signalNumber, void* thisContext);
 
     int backtrace_emulation(void** array, int size) {
+#ifndef __FreeBSD__
         WalkcontextCallback walkcontextCallback(reinterpret_cast<uintptr_t*>(array), size);
         ucontext_t context;
         if (getcontext(&context) != 0) {
@@ -107,6 +112,7 @@ namespace {
         if (wcReturn == 0) {
             return walkcontextCallback.getCount();
         }
+#endif
         return 0;
     }
 

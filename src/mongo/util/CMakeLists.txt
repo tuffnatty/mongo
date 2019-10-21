@@ -86,6 +86,12 @@ target_link_libraries(processinfo LINK_PUBLIC
   foundation
   bson
   )
+if (system_suffix STREQUAL freebsd)
+  target_link_libraries(processinfo LINK_PUBLIC
+    kvm
+    execinfo
+    )
+endif ()
 
 if (system_suffix STREQUAL darwin OR
     system_suffix STREQUAL freebsd OR

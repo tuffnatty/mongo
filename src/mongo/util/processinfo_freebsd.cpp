@@ -106,20 +106,15 @@ namespace mongo {
     }
 
     string ProcessInfo::getExePath() const {
-        char name[128];
-        sprintf(name, "/proc/%d/file", _pid);
-
-        char path[128];
-        shared_ptr<char> real(realpath(name, NULL), free);
-        if (!real.get()) {
-            stringstream ss;
-            ss << "couldn't realpath [" << name << "] " << errnoWithDescription();
-            string s = ss.str();
-            // help the assert# control uasserted( 16899 , s.c_str() );
-            msgassertedNoTrace( 16899 , s.c_str() );
-        }
-        string exePath(real.get());
-        return exePath;
+        kvm_t *kd = NULL;
+        int cnt = 0;
+        char err[_POSIX2_LINE_MAX] = {0};
+        if ((kd = kvm_open(NULL, "/dev/null", "/dev/null", O_RDONLY, err)) == NULL)
+            return NULL;
+        kinfo_proc * task = kvm_getprocs(kd, KERN_PROC_PID, _pid, &cnt);
+        kvm_close(kd);
+	string exePath(task->ki_comm);
+	return exePath;
     }
 
     void ProcessInfo::SystemInfo::collectSystemInfo() {

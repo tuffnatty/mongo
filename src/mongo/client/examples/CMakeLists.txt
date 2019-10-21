@@ -38,6 +38,9 @@ foreach (bin ${normal_bins} ${abnormal_bins} bsondemo)
     mongoclient
     ${TOKUMX_SSL_LIBRARIES}
     )
+  if (CMAKE_SYSTEM_NAME STREQUAL FreeBSD)
+    target_link_libraries(${bin} kvm)
+  endif ()
 endforeach ()
 
 foreach (base ${normal_bins} ${abnormal_srcs})

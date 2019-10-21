@@ -58,6 +58,9 @@
 #include "platform.h"
 #include "vm-state-inl.h"
 
+#ifndef MAP_NORESERVE
+#define MAP_NORESERVE 0x0040
+#endif
 
 namespace v8 {
 namespace internal {

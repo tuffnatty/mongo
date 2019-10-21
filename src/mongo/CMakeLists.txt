@@ -203,6 +203,10 @@ if (TOKUMX_CLIENT_LIB_SHARED)
     set_target_properties(mongoclient PROPERTIES
       LINK_FLAGS "-Wl,--as-needed -Wl,-zdefs"
       )
+  elseif (CMAKE_SYSTEM_NAME STREQUAL FreeBSD)
+    target_link_libraries(mongoclient
+      execinfo
+      )
   endif ()
 else ()
   add_library(mongoclient STATIC
@@ -217,6 +221,11 @@ else ()
   if (USE_SASL_CLIENT)
     target_link_libraries(mongoclient LINK_PUBLIC
       ${SASL_LIBRARIES}
+      )
+  endif ()
+  if (CMAKE_SYSTEM_NAME STREQUAL FreeBSD)
+    target_link_libraries(mongoclient LINK_PUBLIC
+      execinfo
       )
   endif ()
 endif ()
@@ -567,9 +576,11 @@ target_link_libraries(mongod
   ${TokuBackup_LIBRARIES}
   )
 if (NOT APPLE)
+  if (NOT CMAKE_SYSTEM_NAME STREQUAL FreeBSD)
   target_link_whole_libraries(mongod
     jemalloc
     )
+  endif ()
 endif ()
 link_recursive_deps(mongod
   coredb
@@ -607,9 +618,11 @@ foreach (tool
     )
   add_dependencies(${tool} generate_error_codes generate_action_types install_tdb_h)
   if (NOT APPLE)
+    if (NOT CMAKE_SYSTEM_NAME STREQUAL FreeBSD)
     target_link_whole_libraries(${tool}
       jemalloc
       )
+    endif ()
   endif ()
   link_recursive_deps(${tool}
     COMBINED_LIBNAME all_tool_deps
@@ -638,9 +651,11 @@ foreach (tool
     )
   add_dependencies(${tool} generate_error_codes generate_action_types)
   if (NOT APPLE)
+    if (NOT CMAKE_SYSTEM_NAME STREQUAL FreeBSD)
     target_link_whole_libraries(${tool}
       jemalloc
       )
+    endif ()
   endif ()
   link_recursive_deps(${tool}
     COMBINED_LIBNAME docgen_tool_deps
@@ -655,9 +670,11 @@ add_executable(mongos
   )
 add_dependencies(mongos generate_error_codes generate_action_types)
 if (NOT APPLE)
+  if (NOT CMAKE_SYSTEM_NAME STREQUAL FreeBSD)
   target_link_whole_libraries(mongos
     jemalloc
     )
+  endif ()
 endif ()
 link_recursive_deps(mongos
   mongoscore
@@ -678,9 +695,11 @@ if (APPLE OR PCAP_FOUND)
     COMPILE_DEFINITIONS MONGO_EXPOSE_MACROS
     )
   if (NOT APPLE)
+    if (NOT CMAKE_SYSTEM_NAME STREQUAL FreeBSD)
     target_link_whole_libraries(mongosniff
       jemalloc
       )
+    endif ()
   endif ()
   link_recursive_deps(mongosniff
     gridfs
